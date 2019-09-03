@@ -20,7 +20,8 @@ var app = new Vue({
         price: 21488,
         count: 1
       }
-    ]
+    ],
+    checkBoxModel: []
   },
   computed: {
     totalPrice: function() {

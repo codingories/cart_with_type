@@ -2,27 +2,78 @@ var app = new Vue({
   el: "#app",
   data: {
     list: [
-      {
-        id: 1,
-        name: "iPhone 7",
-        price: 6188,
-        count: 1,
-        isBuy: false
-      },
-      {
-        id: 2,
-        name: "iPad Pro",
-        price: 5888,
-        count: 1,
-        isBuy: false
-      },
-      {
-        id: 3,
-        name: "MacBook Pro",
-        price: 21488,
-        count: 1,
-        isBuy: false
-      }
+      [
+        {
+          id: 1,
+          name: "iphone 7",
+          price: "6188",
+          count: 1,
+          isBuy: false,
+          cls: "Eletronic Products"
+        },
+        {
+          id: 2,
+          name: "ipad Pro",
+          price: "5888",
+          count: 1,
+          isBuy: false
+        },
+        {
+          id: 3,
+          name: "macbook pro",
+          price: "21488",
+          count: 1,
+          isBuy: false
+        }
+      ],
+      [
+        {
+          id: 4,
+          name: "T-shirt",
+          price: "150",
+          count: 1,
+          isBuy: false,
+          cls: "Daily Use"
+        },
+        {
+          id: 5,
+          name: "cup",
+          price: "10",
+          count: 2,
+          isBuy: false
+        },
+        {
+          id: 6,
+          name: "dish",
+          price: "30",
+          count: 1,
+          isBuy: false
+        }
+      ],
+      [
+        {
+          id: 7,
+          name: "apple",
+          price: "3",
+          count: 5,
+          isBuy: false,
+          cls: "Garden Stuff"
+        },
+        {
+          id: 8,
+          name: "watermelon",
+          price: "15",
+          count: 1,
+          isBuy: false
+        },
+        {
+          id: 9,
+          name: "cabbage",
+          price: "5",
+          count: 1,
+          isBuy: false
+        }
+      ]
     ],
     checkBoxModel: [],
     allp: false
@@ -30,25 +81,28 @@ var app = new Vue({
   computed: {
     totalPrice: function() {
       var total = 0;
+
       for (var i = 0; i < this.list.length; i++) {
-        if (this.list[i].isBuy) {
-          var item = this.list[i];
-          total += item.price * item.count;
+        for (var j = 0; j < this.list[i].length; j++) {
+          var itemp = this.list[i][j];
+          if (itemp.isBuy) {
+            total += itemp.price * itemp.count;
+          }
         }
       }
-      return total.toString().replace(/\B(?=(\d{3})+$)/g, "", "");
+      return total.toString().replace(/\B(?=(\d{3})+$)/g, ",");
     }
   },
   methods: {
-    handleReduce: function(index) {
-      if (this.list[index].count === 1) return;
-      this.list[index].count--;
+    handleReduce: function(index, inindex) {
+      if (this.list[index][inindex].count === 1) return;
+      this.list[index][inindex].count--;
     },
-    handleAdd: function(index) {
-      this.list[index].count++;
+    handleAdd: function(index, inindex) {
+      this.list[index][inindex].count++;
     },
-    handleRemove: function(index) {
-      this.list.splice(index, 1);
+    handleRemove: function(index, inindex) {
+      this.list[index].splice(inindex, 1);
     },
     allPick: function() {
       var _this = this;
@@ -57,55 +111,73 @@ var app = new Vue({
         _this.allp = false;
       } else {
         _this.checkBoxModel = [];
-        _this.list.forEach(function(item) {
-          _this.checkBoxModel.push(item.id);
-        });
+        for (var i = 0; i < _this.list.length; i++) {
+          _this.list[i].forEach(function(item) {
+            _this.checkBoxModel.push(item.id);
+          });
+        }
         _this.allp = true;
       }
-      //全选的实现通过checkBoxModel的状态
     },
-    pickOne: function(index) {
-      if (this.list[index].isBuy) {
-        this.list[index].isBuy = false;
+    clsallPick: function() {},
+    pickOne: function(index, inindex) {
+      if (this.list[index][inindex].isBuy) {
+        this.list[index][inindex].isBuy = false;
       } else {
-        this.list[index].isBuy = true;
+        this.list[index][inindex].isBuy = true;
       }
-      //单选的实现依靠的是isBuy通过click的切换实现
     },
     checkPick: function() {
       _this = this;
       var sumPic = 0;
+      var alength = 0;
       for (var i = 0; i < _this.list.length; i++) {
-        if (_this.list[i].isBuy) {
-          sumPic++;
+        for (var j = 0; j < _this.list[i].length; j++) {
+          if (_this.list[i][j].isBuy) {
+            sumPic++;
+          }
         }
+        alength += _this.list[i].length;
       }
-      if (sumPic == _this.list.length) {
+      if (sumPic == alength) {
         _this.allp = true;
+        console.log("all pick");
       } else {
         _this.allp = false;
+      }
+    },
+    clas: function(index) {
+      for (var j = 0; j < this.list.length; j++) {
+        if (index === j) {
+          return this.list[j][0].cls;
+        }
       }
     },
     checkModel: function() {
       _this = this;
       if (_this.checkBoxModel.length) {
         newArr = _this.checkBoxModel.concat();
-        console.log(newArr);
-        for (var i = 0; i < _this.checkBoxModel.length; i++) {
-          newone = newArr.shift().toString();
-          // console.log(newone);
-          _this.list[newone - 1].isBuy = true;
-          // console.log(newone);
-          // console.log(_this.list[newone - 1]);
+        //console.log(newone);
+        for (var i = 0; i < _this.list.length; i++) {
+          for (var j = 0; j < _this.list[i].length; j++) {
+            var newone = newArr.shift();
+            if (_this.list[i][j].id === newone) {
+              _this.list[i][j].isBuy = true;
+            }
+          }
         }
       } else {
-        newArr = _this.checkBoxModel.concat();
-        //console.log(newArr);
         for (var i = 0; i < _this.list.length; i++) {
-          _this.list[i].isBuy = false;
+          for (var j = 0; j < _this.list[i].length; j++) {
+            _this.list[i][j].isBuy = false;
+          }
         }
       }
-      // 利用checkBoxModel的绑定的状态来分别给每个物品确认isBuy的状态，避免与pickOne的冲突
     }
+  },
+  created() {
+    _this = this;
+    _this.checkModel();
+    console.log(_this.list[1][2].name);
   }
 });

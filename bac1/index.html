@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>购物车示例</title>
+    <link rel="stylesheet" type="text/css" href="style.css" />
+  </head>
+  <body>
+    <div id="app" v-cloak>
+      <template v-if="list.length">
+        <table>
+          <thead>
+            <tr v-for="(item,index) in list">
+              <td>{{ index + 1 }}</td>
+              <td>{{ item.name }}</td>
+              <td>{{ item.price }}</td>
+              <td>
+                <button
+                  @click="handleReduce(index)"
+                  :disabled="item.count === 1"
+                >
+                  -
+                </button>
+                {{ item.count }}
+                <button @click="handleAdd(index)">+</button>
+              </td>
+              <td>
+                <button @click="handleRemove(index)">移除</button>
+              </td>
+              <td>
+                <input
+                  type="checkbox"
+                  :value="item.id"
+                  v-model="checkBoxModel"
+                  @click.stop="pickOne(index),checkPick()"
+                />
+                <!-- checkBoxModel 是一个[] -->
+                <!-- pickOne-单选的实现依靠的是isBuy通过click的切换实现,列表里的isBuy默认为false,如果是false,则让它变为true -->
+                <!-- checkPick-看单项的勾选了几个,如果都勾选了，则把allp设置为true,否则设置为false -->
+              </td>
+            </tr>
+            <tr>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td>全选</td>
+              <td>
+                <input
+                  type="checkbox"
+                  @click="allPick(),checkModel()"
+                  v-model="allp"
+                />
+                <!-- allp是一个boolean,默认为false -->
+                <!-- allPick-全选的实现通过checkBoxModel的状态 -->
+                <!-- checkModel - 此时checkBoxModel[1,2,3],利用checkBoxModel的绑定的状态来分别给每个物品确认isBuy的状态，避免与pickOne的冲突 -->
+              </td>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+        <div>总价:${{ totalPrice }}</div>
+      </template>
+      <div v-else>购物车为空</div>
+    </div>
+    <script src="https://unpkg.com/vue/dist/vue.min.js"></script>
+    <script src="index.js"></script>
+  </body>
+</html>
